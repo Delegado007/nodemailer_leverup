@@ -16,8 +16,7 @@ app.get('/', (req, res) => {
 })
 
 app.post("/send_mail", cors(), async (req, res) => {
-  let message = req.body
-  console.log(message.message[0].text)
+  let { name, mail, message } = req.body
 
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -43,14 +42,15 @@ app.post("/send_mail", cors(), async (req, res) => {
     line-height: 2;
     font-size: 20px; 
     ">
-    <h2>Here is your email!</h2>
-    <p>${message.message[0].text}</p>
+    <h2>Contact for job</h2>
+    <p>Name: ${name}</p>
     
-    <p>All the best, Darwin</p>
+    <p>Mail: ${mail}</p>
+    <b>${message}</b>
     </div>
     `
   })
-  res.status(201).json(message);
+  res.status(201).json("mail enviado");
 })
 
 app.listen(port, () => {
