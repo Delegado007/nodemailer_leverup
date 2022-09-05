@@ -9,8 +9,22 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-app.use(cors())
-
+const whitelist = [
+  'http://localhost:3000',
+  'http://127.0.0.1:5600',
+  'http://localhost:3006',
+  'https://delegado-dev.netlify.app'
+];
+const options = {
+  origin: (origin, callback) => {
+    if (whitelist.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido'));
+    }
+  },
+};
+app.use(cors(options));
 app.get('/', (req, res) => {
   res.send('Server nodemailer listo');
 })
