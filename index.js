@@ -50,7 +50,7 @@ app.post("/send_mail", cors(), async (req, res) => {
     </div>
     `
   })
-  res.status(200);
+  res.status(201).json(message);
 })
 
 app.listen(port, () => {
