@@ -42,10 +42,10 @@ app.post("/send_mail", cors(), async (req, res) => {
     console.log(error)
     return res.status(500).json("Hubo un error al comprobar el captcha");
   }
-  if (resRecaptchaJson?.success === false) {
+  if (resRecaptchaJson.success === false) {
     return res.status(500).json("Hubo un error en la integridad del captcha");
   }
-  if (resRecaptchaJson?.score < 0.7) {
+  if (resRecaptchaJson.score < 0.7) {
     return res.status(500).json("No se admiten robots en este formulario");
   }
 
