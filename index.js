@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const nodemailer = require("nodemailer")
+const axios = require('axios');
 const { config } = require('./config/index')
 const port = config.port || 3000
 
@@ -33,19 +34,24 @@ app.post("/send_mail", cors(), async (req, res) => {
   const objForm = JSON.parse(req.body.json)
   let { nombre, apellido, empresa, cargo, email, cel, pais, message, token } = objForm
   const urlVerificacion = `https://www.google.com/recaptcha/api/siteverify?secret=${config.recapchaSecret}&response=${token}`;
-  let resRecaptchaJson = {}
+  let resRecaptcha = {}
   try {
-    const resRecaptcha = await fetch(urlVerificacion, { method: 'post' })
-    resRecaptchaJson = await resRecaptcha.json();
-    console.log(resRecaptchaJson)
+    console.log("entra")
+    console.log({ token })
+
+    resRecaptcha = await axios({
+      method: 'post',
+      url: urlVerificacion
+    })
+    console.log(resRecaptcha.data)
   } catch (error) {
     console.log(error)
     return res.status(500).json("Hubo un error al comprobar el captcha");
   }
-  if (resRecaptchaJson.success === false) {
+  if (resRecaptcha.data.success === false) {
     return res.status(500).json("Hubo un error en la integridad del captcha");
   }
-  if (resRecaptchaJson.score < 0.7) {
+  if (resRecaptcha.data.score < 0.7) {
     return res.status(500).json("No se admiten robots en este formulario");
   }
 
